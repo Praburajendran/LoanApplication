@@ -20,18 +20,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
 <link rel="import" href="common-header.html">
 <link rel="import" href="footer.html">
 <link rel="import" href="copyright.html">
 <link rel="import" href="common-styles.html">
 
-<link rel="lazy-import" href="my-view1.html">
-<link rel="lazy-import" href="my-view2.html">
-<link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
-<link rel="import" href="login-form.html">
-<link rel="import" href="loan-summary.html">
+<link rel="lazy-import" href="login-form.html">
+<link rel="lazy-import" href="loan-summary.html">
+<link rel="lazy-import" href="loan-apply.html">
 
 <dom-module id="loan-application">
   <template>
@@ -86,10 +83,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}">
     </app-route>
 
+    <!-- Common header component -->
     <common-header id="header" is-logged-in="{{isLoggedIn}}" menu="[[myMenu]]" root-path="[[rootPath]]"
     selected="[[page]]" logout="[[_logout]]">
   </common-header>
 
+  <!-- IRON pages for showing different pages -->
   <iron-pages id='ironpg' selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
       <login-form id='login' title='Login' name="login" login-success="[[_loginSuccess]]" root-path="[[rootPath]]">
         </login-form>
@@ -100,6 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <my-view404 name="view404"></my-view404>
 
   </iron-pages>
+  <!-- Common Footer component -->
   <footer-component root-path="[[rootPath]]"></footer-component>
   <copyright-component></copyright-component>
    
@@ -162,6 +162,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _routeChanged(path) {
+        // Checking if user logged in else redirecting to login screen
         let user = JSON.parse(sessionStorage.getItem('user'));
         this.set('user', user);
 
@@ -173,6 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _loginSuccess(user) {
+        // Storing user details in session storage
         sessionStorage.setItem('user', JSON.stringify(user));
         this.set('route.path', '/summary');
       }

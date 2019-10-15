@@ -9,13 +9,49 @@
 <dom-module id="loan-summary">
   <template>
     <style include="common-styles">
-    </style>
-    <style include="shared-styles">
-    </style>
-    <h2 class="centerText">Welcome, {{users.username}}</h2>
-    <h3 class="centerText"> Your Current Loan balance is {{users.accountBalance}} </h3>
+      
+      paper-button.secondaryButton {
+                min-width: 50%;
+                margin: auto;
+            }
 
-    <iron-ajax id="transHistory" method="[[api.method]]" handle-as="json" last-response="{{users}}"
+            paper-toast {
+                position: absolute !important;
+                /* display: block !important; */
+                left: 48.5% !important;
+                top: 22% !important;
+                transform: translateX(-50%) translateY(-50%);
+                color: #fff;
+                letter-spacing: 0.06em;
+                font-size: 15px;
+                background-color: rgb(221, 44, 0);
+                text-align: center;
+
+            }
+
+            .regcontainer {
+                text-align: center;
+                margin-top: 40px;
+            }
+
+            .header {
+              padding-top: 15%;
+            }
+    </style>
+
+
+<div class="container fntFamily boxShadow whiteBckgrnd">
+
+    <h1 class="header centerText">Loan Summary</h1>
+    <h3 class="centerText">Welcome, {{users.username}}</h3>
+    <h4 class="centerText"> Your Current Loan balance is {{users.loanBalance}} </h4>
+
+    <div class="centerText">
+      EMI Left : {{users.monthsLeft}}
+    </div>
+</div>
+
+    <iron-ajax id="loansumm" method="[[api.method]]" handle-as="json" last-response="{{users}}"
       on-response="handleResponse"></iron-ajax>
   </template>
 
@@ -39,7 +75,9 @@
 
       ready() {
         super.ready();
-        this._getTransactionData();
+        this.getsummarydata();
+
+        // Storing the retrieved value in session storage
         if (sessionStorage.getItem('user')) {
           let userName = JSON.parse(sessionStorage.getItem('user'))["loginId"]
           this.set('userName', userName);
@@ -47,14 +85,14 @@
         }
       }
 
-      _getTransactionData() {
-        let ajax = this.$.transHistory;
+      getsummarydata() {
+        let ajax = this.$.loansumm;
         ajax.url = this.api.url;
         ajax.generateRequest(); //trigger the iron-ajax                
       }
 
       handleResponse(event, request) {
-        console.log(request);
+        console.log(request.response);
       }
     }
     window.customElements.define(LoanSummary.is, LoanSummary);
