@@ -19,7 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="corporate-details.html">
 <link rel="import" href="loan-details.html">
 
-<dom-module id="my-view1">
+<dom-module id="loan-apply">
   <template>
     <style include="shared-styles">
       :host {
@@ -54,32 +54,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
         
         <div class="button-container">
-            <paper-button id='applyBtn' disabled="[[isInputEmpty()]]" class="secondaryButton button-med" submit on-click="register">Apply Loan
+            <paper-button id='applyBtn' disabled="[[isInputEmpty()]]" class="secondaryButton button-med" submit on-click="applyLoan">Apply Loan
             </paper-button>
           </div>
     </div>
+    <iron-ajax id="xhr" url="[[api.url]]" method="[[api.method]]" body="{{bodyData}}" handle-as="json"
+    on-response="_handleResponse" on-error="_handleError" content-type="application/json" timeout=15000>
+  </iron-ajax>
+  <paper-toast duration="5000" id="toast" text="{{msg}}"></paper-toast>
   </template>
 
   <script>
-    class MyView1 extends Polymer.Element {
-      static get is() { return 'my-view1'; }
+    class LoanApply extends Polymer.Element {
+      static get is() { return 'loan-apply'; }
 
       static get properties() {
         return {
           selectedTab: {
                 type: String,
                 value: '0'
+          }, 
+          api: {
+            type: Object,
+            value: {
+              url: 'http://13.234.117.3:9292/openbank/api/register',
+              method: 'POST'
             }
+          }
+        }
+      }
+
+      applyLoan() {
+        var userDetails = {
+          first_name: this.firstname,
+          last_name: this.lastname,
+          email: this.email,
+          username: this.username,
+          password: this.password
+        }
+        if (this.firstname.length >= 3 && this.lastname.length >= 3 && this.email.length >= 3 && this.username.length >= 3 && this.password.length >= 3) {
+          this.bodyData = JSON.stringify(userDetails);
+          var postRequest = this.$.xhr;
+          postRequest.generateRequest();
+        } else {
+          this.msg = "Please enter valid details";
+          this.$.toast.open();
+        }
+      }
+
+      _handleError(request, error) {
+        this.msg = "Server is down, please try again later";
+        this.$.toast.open();
+      }
+
+      _handleResponse(event, request) {
+        let response = request.response;
+        let status = response.status;
+        console.log(response);
+        if (status === 'success') {
+          this.msg = "User registered successfully";
+          this.$.toast.open();
         }
       }
 
       isInputEmpty(){
         return false;
       }
-
-      
     }
 
-    window.customElements.define(MyView1.is, MyView1);
+    window.customElements.define(LoanApply.is, LoanApply);
   </script>
 </dom-module>

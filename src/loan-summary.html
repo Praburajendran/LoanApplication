@@ -1,0 +1,62 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="common-styles.html">
+
+<dom-module id="loan-summary">
+  <template>
+    <style include="common-styles">
+    </style>
+    <style include="shared-styles">
+    </style>
+    <h2 class="centerText">Welcome, {{users.username}}</h2>
+    <h3 class="centerText"> Your Current Loan balance is {{users.accountBalance}} </h3>
+
+    <iron-ajax id="transHistory" method="[[api.method]]" handle-as="json" last-response="{{users}}"
+      on-response="handleResponse"></iron-ajax>
+  </template>
+
+  <script>
+    class LoanSummary extends Polymer.Element {
+      static get is() { return 'loan-summary'; }
+      static get properties() {
+        return {
+          api: {
+            type: Object,
+            value: {
+              url: "./data/loan-summary-success.json",
+              method: "GET"
+            }
+          },
+          userName: {
+            type: String,
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+        this._getTransactionData();
+        if (sessionStorage.getItem('user')) {
+          let userName = JSON.parse(sessionStorage.getItem('user'))["loginId"]
+          this.set('userName', userName);
+          this.userName = JSON.parse(sessionStorage.getItem('user'))["loginId"]
+        }
+      }
+
+      _getTransactionData() {
+        let ajax = this.$.transHistory;
+        ajax.url = this.api.url;
+        ajax.generateRequest(); //trigger the iron-ajax                
+      }
+
+      handleResponse(event, request) {
+        console.log(request);
+      }
+    }
+    window.customElements.define(LoanSummary.is, LoanSummary);
+  </script>
+</dom-module>
