@@ -1,0 +1,80 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>my-view1</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/loan-summary.html">
+  </head>
+  <body>
+    <test-fixture id="BasicView">
+      <template>
+        <loan-summary></loan-summary>
+      </template>
+    </test-fixture>
+
+    <script>
+        var ajax;
+    var request;
+    var server;
+    var resultObj = {
+      "status": "success",
+      "username": "praburajendran",
+      "loanBalance": "10259",
+      "monthsLeft": 24
+    };
+    var responseHeaders = {
+      json: { 'Content-Type': 'application/json' }
+    };
+    setup(function() {
+      server = sinon.fakeServer.create();
+      server.respondWith(
+        'GET',
+        /\/data\/loan-summary-success.json/, [
+          200,
+          responseHeaders.json,
+          JSON.stringify(resultObj)
+        ]
+      );
+    });
+    teardown(function() {
+      server.restore();
+    });
+    
+    suite('when making simple GET requests for JSON', function() {
+      setup(function() {
+        // get fresh instance of iron-ajax before every test
+        elem = fixture('BasicView');
+      });
+      test('has correct values', function() {
+        ajax = elem.$.loansumm;
+        request = ajax.generateRequest();
+        server.respond();
+        expect(request.response).to.be.ok;
+        expect(request.response).to.be.an('object');
+        expect(request.response.status).to.be.equal('success');
+      });
+      test('has the correct xhr method', function() {
+        request = ajax.generateRequest();
+        expect(request.xhr.method).to.be.equal('GET');
+      });
+    });
+    </script>
+  </body>
+</html>

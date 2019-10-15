@@ -54,7 +54,7 @@
 
             <div>
                 <h4 class="label">Enter Revenue last year</h4>
-                <paper-input type="text" label="Revenue" id="revenueLastYear" no-label-float value="{{revenueLastYear}}" required>
+                <paper-input type="number" label="Revenue" id="revenueLastYear" no-label-float value="{{revenueLastYear}}" required>
                 </paper-input>
             </div>
 
@@ -68,9 +68,8 @@
             <div>
                 <h4 class="label">Complete financial statments of past two years</h4>
                 <input  type="file" name="financialStatement" accept="application/pdf" id="financialStatement" no-label-float value="{{financialStatement}}" required>
-            </input>
+                <input>
             </div>
-
       </form>
     </iron-form>
     </div>

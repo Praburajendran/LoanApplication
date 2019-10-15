@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </style>
 
     <div class="card">
-
+<!-- Using paper tabs for tab view -->
         <paper-tabs selected={{selectedTab}} scrollable>
           <paper-tab>Personal Details</paper-tab>
           <paper-tab>Corporate Details</paper-tab>
@@ -58,6 +58,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </paper-button>
           </div>
     </div>
+    
+    <!-- Using iron ajax for submitting loan application -->
     <iron-ajax id="xhr" url="[[api.url]]" method="[[api.method]]" body="{{bodyData}}" handle-as="json"
     on-response="_handleResponse" on-error="_handleError" content-type="application/json" timeout=15000>
   </iron-ajax>
@@ -85,8 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       applyLoan() {
-        debugger
-
+        // Creating formdata object of all fields entered by user
         let formData = {};
         let personalComp = this.$.personalDetails;
         let corporateComp = this.$.corporateDetails;
@@ -109,14 +110,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         let corporateObj = {};
 
+        // Sending pdf file
         var fd = new FormData();
         fd.append('pdf-file',corporateComp.shadowRoot.querySelector('#commercialRegister').files[0]);
-        fd.append('pdf-file',corporateComp.shadowRoot.querySelector('#financialStatement').files[0]);
+        var commReg = new FormData();
+        commReg.append('pdf-file',corporateComp.shadowRoot.querySelector('#financialStatement').files[0]);
 
         corporateObj = {
-          commercialRegister: JSON.stringify(fd),
+          commercialRegister: fd,
           companyName: corporateComp.companyName,
-          financialStatement: JSON.stringify(fd),
+          financialStatement: commReg,
           legalStructure: corporateComp.legalStructure,
           revenueLastYear: corporateComp.revenueLastYear
         }
@@ -128,13 +131,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         loanObj = {
           amount: loanComp.amount,
           term: loanComp.term,
-          usage: loanComp.usage
+          loanUsage: loanComp.$.loanUsage.value
         }
 
         formData.corporateDetails = corporateObj;
         formData.personalDetails = personalObj;
         formData.loanDetails = loanObj;
-
+        
+        // XHR request for submitting data.
         this.bodyData = JSON.stringify(formData);
         var postRequest = this.$.xhr;
         postRequest.generateRequest();
@@ -150,12 +154,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         let status = response.status;
         console.log(response);
         if (status === 'success') {
-          this.msg = "User registered successfully";
+          this.msg = "Loan submitted successfully";
           this.$.toast.open();
         }
       }
 
       isInputEmpty(){
+        // need to check condition here for toggling button
         return false;
       }
     }

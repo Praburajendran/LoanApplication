@@ -81,8 +81,7 @@
                     </div>
 
                     <div class="button-container">
-                        <paper-button id='loginBtn' class="secondaryButton button-med" submit on-click="login">Login
-                        </paper-button>
+                        <paper-button id='loginBtn' class="secondaryButton button-med" submit on-click="login">LOGIN</paper-button>
                     </div>
                     <div class='regcontainer'>New User? <span><a
                                 href="{{_generateSignupURL('/','loanapply')}}">Fill your details here</a></span></div>
@@ -107,11 +106,7 @@
                         type: Object,
                     },
                     api: {
-                        type: Object,
-                        value: {
-                            url: '/data/login-success.json',
-                            method: 'GET'
-                        }
+                        type: Object
                     },
                     username: {
                         type: String,
@@ -153,8 +148,8 @@
 
             ready(){
                 super.ready();
-                this.$.xhr.url = this._generateSignupURL(this.rootPath,'../data/login-success.json');
-                this.$.xhr.method = 'GET';
+                this.$.xhr.url = this._generateSignupURL(this.rootPath,'http://13.234.117.3:9292/login');
+                this.$.xhr.method = 'POST';
             }
 
             _generateSignupURL(rootPath, slug) {

@@ -35,19 +35,19 @@
       <form>
         <div>
           <h4 class="label">Enter Amount</h4>
-          <paper-input type="text" label="Amount" id="amount" no-label-float value="{{amount}}" required>
+          <paper-input type="number" label="Amount" id="amount" no-label-float value="{{amount}}" required>
           </paper-input>
         </div>
 
         <div>
           <h4 class="label">Enter Term</h4>
-          <paper-input type="text" label="Term(months)" id="accno" no-label-float value="{{term}}" required>
+          <paper-input type="number" label="Term(months)" id="accno" no-label-float value="{{term}}" required>
           </paper-input>
         </div>
 
         <div>
             <h4 class="label">Enter Usage</h4>
-            <paper-dropdown-menu allow-outside-scroll="true" id="loanUsage" name="loanUsage" class="customWidth" no-label-float>
+            <paper-dropdown-menu allow-outside-scroll="true" id="loanUsage" class="customWidth" no-label-float>
                 <paper-listbox slot="dropdown-content" attr-for-selected="value" class="dropdown-content customWidth">
                     <template is="dom-repeat" items="[[usageArr]]">
                         <paper-item value$="[[item]]">[[item]]</paper-item>

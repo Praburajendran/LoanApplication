@@ -95,15 +95,6 @@
         <div class='title'>Banking Loan Application</div>
         <div class="h-container height100">
 
-            <div class="menu-wrapper">
-                <template is="dom-if" if="{{isLoggedIn}}">
-                    <template is="dom-repeat" items={{menu}}>
-                        <span><a class$="secondaryLinkButton [[item.class]]"
-                                href="{{_generateURL(rootPath,item.slug)}}">{{item.display}}</a></span>
-                    </template>
-                </template>
-            </div>
-
             <div class="logout-wrapper">
                 <template is="dom-if" if="{{isLoggedIn}}">
                     <a id="logoutBtn" class$="secondaryLinkButton [[item.class]]" on-click="_logout"
