@@ -1,0 +1,127 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="common-styles.html">
+<link rel="import" href="personal-details.html">
+<link rel="import" href="corporate-details.html">
+<link rel="import" href="loan-details.html">
+
+<dom-module id="loan-apply">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+        <style include="common-styles">
+          </style>
+          <style include="shared-styles">
+          </style>
+
+    <div class="card">
+
+        <paper-tabs selected={{selectedTab}} scrollable>
+          <paper-tab>Personal Details</paper-tab>
+          <paper-tab>Corporate Details</paper-tab>
+          <paper-tab>Loan Details</paper-tab>
+        </paper-tabs>
+
+        <iron-pages selected="{{selectedTab}}">
+            <div>
+              <personal-details></personal-details>
+            </div>
+            <div>
+              <corporate-details></corporate-details>
+            </div>
+            <div>
+              <loan-details></loan-details>
+            </div>
+        </iron-pages>
+        
+        <div class="button-container">
+            <paper-button id='applyBtn' disabled="[[isInputEmpty()]]" class="secondaryButton button-med" submit on-click="applyLoan">Apply Loan
+            </paper-button>
+          </div>
+    </div>
+    <iron-ajax id="xhr" url="[[api.url]]" method="[[api.method]]" body="{{bodyData}}" handle-as="json"
+    on-response="_handleResponse" on-error="_handleError" content-type="application/json" timeout=15000>
+  </iron-ajax>
+  <paper-toast duration="5000" id="toast" text="{{msg}}"></paper-toast>
+  </template>
+
+  <script>
+    class LoanApply extends Polymer.Element {
+      static get is() { return 'loan-apply'; }
+
+      static get properties() {
+        return {
+          selectedTab: {
+                type: String,
+                value: '0'
+          }, 
+          api: {
+            type: Object,
+            value: {
+              url: 'http://13.234.117.3:9292/openbank/api/register',
+              method: 'POST'
+            }
+          }
+        }
+      }
+
+      applyLoan() {
+        var userDetails = {
+          first_name: this.firstname,
+          last_name: this.lastname,
+          email: this.email,
+          username: this.username,
+          password: this.password
+        }
+        if (this.firstname.length >= 3 && this.lastname.length >= 3 && this.email.length >= 3 && this.username.length >= 3 && this.password.length >= 3) {
+          this.bodyData = JSON.stringify(userDetails);
+          var postRequest = this.$.xhr;
+          postRequest.generateRequest();
+        } else {
+          this.msg = "Please enter valid details";
+          this.$.toast.open();
+        }
+      }
+
+      _handleError(request, error) {
+        this.msg = "Server is down, please try again later";
+        this.$.toast.open();
+      }
+
+      _handleResponse(event, request) {
+        let response = request.response;
+        let status = response.status;
+        console.log(response);
+        if (status === 'success') {
+          this.msg = "User registered successfully";
+          this.$.toast.open();
+        }
+      }
+
+      isInputEmpty(){
+        return false;
+      }
+    }
+
+    window.customElements.define(LoanApply.is, LoanApply);
+  </script>
+</dom-module>

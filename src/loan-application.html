@@ -21,13 +21,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="common-header.html">
+<link rel="import" href="footer.html">
+<link rel="import" href="copyright.html">
+<link rel="import" href="common-styles.html">
 
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
+<link rel="import" href="login-form.html">
+<link rel="import" href="loan-summary.html">
 
-<dom-module id="my-app">
+<dom-module id="loan-application">
   <template>
     <style>
       :host {
@@ -80,39 +86,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}">
     </app-route>
 
-    <app-drawer-layout fullbleed narrow="{{narrow}}">
-      <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="[[rootPath]]view1">View One</a>
-          <a name="view2" href="[[rootPath]]view2">View Two</a>
-          <a name="view3" href="[[rootPath]]view3">View Three</a>
-        </iron-selector>
-      </app-drawer>
+    <common-header id="header" is-logged-in="{{isLoggedIn}}" menu="[[myMenu]]" root-path="[[rootPath]]"
+    selected="[[page]]" logout="[[_logout]]">
+  </common-header>
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
+  <iron-pages id='ironpg' selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+      <login-form id='login' title='Login' name="login" login-success="[[_loginSuccess]]" root-path="[[rootPath]]">
+        </login-form>
+      <loan-summary title="Summary" name='summary' id='summary'></loan-summary>
+      <loan-details title="loandetails" name="loandetails" id='loandetails'></loan-details>
+      <loan-apply title="loanapply" name="loanapply" id='loanapply'></loan-apply>
+      <my-view1 name="view1"></my-view1>
+    <my-view404 name="view404"></my-view404>
 
-        <app-header slot="header" condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>My App</div>
-          </app-toolbar>
-        </app-header>
-
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
+  </iron-pages>
+  <footer-component root-path="[[rootPath]]"></footer-component>
+  <copyright-component></copyright-component>
+   
   </template>
 
   <script>
@@ -120,8 +110,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // preventable, allowing for better scrolling performance.
     Polymer.setPassiveTouchGestures(true);
 
-    class MyApp extends Polymer.Element {
-      static get is() { return 'my-app'; }
+    class LoanApplication extends Polymer.Element {
+      static get is() { return 'loan-application'; }
 
       static get properties() {
         return {
@@ -141,28 +131,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
+          '_routeChanged(route.path)'
         ];
       }
 
       _routePageChanged(page) {
         // If no page was found in the route data, page will be an empty string.
         // Default to 'view1' in that case.
-        this.page = page || 'view1';
-
-        // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
+        this.page = page || 'login';
       }
 
       _pageChanged(page) {
-        // Load page import on demand. Show 404 page if fails
-        const resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-        Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+
+      const pathMap = {
+        "login": "login-form.html",
+        "summary": "loan-summary.html",
+        "loandetails": "loan-details.html",
+        "loanapply": "loan-apply.html"
+      };
+
+      const fileName = pathMap[page] ? pathMap[page] : 'my-view404.html';
+
+      // Load page import on demand. Show 404 page if fails
+      const resolvedPageUrl = this.resolveUrl(fileName);
+      Polymer.importHref(
+        resolvedPageUrl,
+        null,
+        this._showPage404.bind(this),
+        true);
+      }
+
+      _routeChanged(path) {
+        let user = JSON.parse(sessionStorage.getItem('user'));
+        this.set('user', user);
+
+        let isLoggedIn = user ? true : false;
+        this.set('isLoggedIn', isLoggedIn);
+        if (!this.isLoggedIn && (path !== '/register') && (path !== '/loanapply')) {
+          this.set('route.path', '/login');
+        }
+      }
+
+      _loginSuccess(user) {
+        sessionStorage.setItem('user', JSON.stringify(user));
+        this.set('route.path', '/summary');
+      }
+
+      _logout() {
+        this.set('route.path', '/login');
+        sessionStorage.removeItem('user');
+        this.isLoggedIn = false;
       }
 
       _showPage404() {
@@ -170,6 +188,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
 
-    window.customElements.define(MyApp.is, MyApp);
+    window.customElements.define(LoanApplication.is, LoanApplication);
   </script>
 </dom-module>

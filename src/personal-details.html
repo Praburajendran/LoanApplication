@@ -1,0 +1,93 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="common-styles.html">
+
+
+<dom-module id="personal-details">
+  <template>
+    <style include="common-styles">
+    </style>
+    <style include="shared-styles">
+
+    </style>
+
+    <h2 class="centerText">Personal details</h2>
+    <iron-form id="myForm" on-submit="register">
+      <form>
+        <div>
+          <h4 class="label">Enter Name</h4>
+          <paper-input type="text" label="Name" id="name" no-label-float value="{{name}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+          <h4 class="label">Enter Address</h4>
+          <paper-input type="text" label="Address" id="address" no-label-float value="{{address}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+            <h4 class="label">Enter Citizenship</h4>
+            <paper-input type="text" label="Citizenship" id="citizenship" no-label-float value="{{citizenship}}" required></paper-input>
+          </div>
+
+        <div>
+            <h4 class="label">Select Birth date</h4>
+            <vaadin-date-picker id='vaadinFromDate' value="{{fromDateVal}}" min={{fromMinDate}} max={{fromMaxDate}} placeholder="Select Date"
+                on-change="_fromDateChanged">
+            </vaadin-date-picker>
+        </div>
+
+        <div>
+          <h4 class="label">Enter Email</h4>
+          <paper-input type="text" label="Email" id="email" no-label-float value="{{email}}" required></paper-input>
+        </div>
+
+        <div>
+          <h4 class="label">Enter Passport Number</h4>
+          <paper-input type="text" label="Passport" id="passport" no-label-float value="{{passport}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+            <h4 class="label">Enter Phone Number</h4>
+            <paper-input type="text" label="Phone" id="phone" no-label-float value="{{phone}}" required>
+            </paper-input>
+          </div>
+      </form>
+    </iron-form>
+    </div>
+    <app-location route="{{route}}"></app-location>
+  </template>
+
+  <script>
+    class PersonalDetails extends Polymer.Element {
+      static get is() { return 'personal-details'; }
+
+      register() {
+        var userDetails = {
+          first_name: this.firstname,
+          last_name: this.lastname,
+          email: this.email,
+          username: this.username,
+          password: this.password
+        }
+        if (this.firstname.length >= 3 && this.lastname.length >= 3 && this.email.length >= 3 && this.username.length >= 3 && this.password.length >= 3) {
+          this.bodyData = JSON.stringify(userDetails);
+          var postRequest = this.$.xhr;
+          postRequest.generateRequest();
+        } else {
+          this.msg = "Please enter valid details";
+          this.$.toast.open();
+        }
+      }
+    }
+    window.customElements.define(PersonalDetails.is, PersonalDetails);
+  </script>
+</dom-module>

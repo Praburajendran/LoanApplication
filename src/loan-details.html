@@ -1,0 +1,80 @@
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<script src="../bower_components/web-animations-js/web-animations.min.js"></script>
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="common-styles.html">
+
+
+<dom-module id="loan-details">
+  <template>
+    <style include="common-styles">
+      .customWidth {
+                width: 100%;
+            }
+
+      .customWidth paper-item:hover {
+          background-color: #dbdbdb;
+      }
+    </style>
+    <style include="shared-styles">
+
+    </style>
+
+    <h2 class="centerText">Loan details</h2>
+    <iron-form id="myForm" on-submit="register">
+      <form>
+        <div>
+          <h4 class="label">Enter Amount</h4>
+          <paper-input type="text" label="Amount" id="amount" no-label-float value="{{amount}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+          <h4 class="label">Enter Term</h4>
+          <paper-input type="text" label="Term(months)" id="accno" no-label-float value="{{term}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+            <h4 class="label">Enter Usage</h4>
+            <paper-dropdown-menu allow-outside-scroll="true" id="period" on-iron-select="_periodChanged" class="customWidth" no-label-float>
+                <paper-listbox slot="dropdown-content" attr-for-selected="value" class="dropdown-content customWidth" selected="{{selectedPeriod}}">
+                    <template is="dom-repeat" items="[[usageArr]]">
+                        <paper-item value$="[[item]]">[[item]]</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+        </div>
+
+      </form>
+    </iron-form>
+    </div>
+    <app-location route="{{route}}"></app-location>
+  </template>
+
+  <script>
+    class LoanDetails extends Polymer.Element {
+      static get is() { return 'loan-details'; }
+
+      static get properties() {
+        return {
+          usageArr: {
+                type: Array,
+                value: ['Current Assets', 'Debt restructuring', 'Investment in fixed assets', 'Growth Capital', 'Other(specify)']
+            }
+        }
+      }
+    }
+    window.customElements.define(LoanDetails.is, LoanDetails);
+  </script>
+</dom-module>

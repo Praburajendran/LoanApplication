@@ -1,0 +1,87 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="common-styles.html">
+
+
+<dom-module id="corporate-details">
+  <template>
+    <style include="common-styles">
+    </style>
+    <style include="shared-styles">
+
+    </style>
+
+    <h2 class="centerText">Corporate details</h2>
+    <iron-form id="myForm" on-submit="register">
+      <form>
+        <div>
+          <h4 class="label">Enter Company Name</h4>
+          <paper-input type="text" label="Company Name" id="compname" no-label-float value="{{compname}}" required>
+          </paper-input>
+        </div>
+
+        <div>
+            <h4 class="label">Enter Company Address</h4>
+            <paper-input type="text" label="Company Address" id="compaddress" no-label-float value="{{compaddress}}" required>
+            </paper-input>
+          </div>
+
+          <div>
+              <h4 class="label">Enter Legal Structure</h4>
+              <paper-input type="text" label="Legal Structure" id="legalstructure" no-label-float value="{{legalstructure}}" required>
+              </paper-input>
+            </div>
+
+            <div>
+                <h4 class="label">Enter Revenue last year</h4>
+                <paper-input type="text" label="Revenue" id="revenue" no-label-float value="{{revenue}}" required>
+                </paper-input>
+            </div>
+
+            
+            <div>
+                <h4 class="label">Extract from commercial register</h4>
+                <paper-input  type="file" name="commregister" accept="application/pdf" id="commregister" no-label-float value="{{commregister}}" required>
+                </paper-input>
+            </div>
+
+            <div>
+                <h4 class="label">Complete financial statments of past two years</h4>
+                <paper-input  type="file" name="financestatment" accept="application/pdf" id="financestatment" no-label-float value="{{financestatment}}" required>
+                </paper-input>
+            </div>
+
+      </form>
+    </iron-form>
+    </div>
+    <app-location route="{{route}}"></app-location>
+  </template>
+
+  <script>
+    class CorporateDetails extends Polymer.Element {
+      static get is() { return 'corporate-details'; }
+
+      register() {
+        var userDetails = {
+          first_name: this.firstname,
+          last_name: this.lastname,
+          email: this.email,
+          username: this.username,
+          password: this.password
+        }
+        if (this.firstname.length >= 3 && this.lastname.length >= 3 && this.email.length >= 3 && this.username.length >= 3 && this.password.length >= 3) {
+          this.bodyData = JSON.stringify(userDetails);
+          var postRequest = this.$.xhr;
+          postRequest.generateRequest();
+        } else {
+          this.msg = "Please enter valid details";
+          this.$.toast.open();
+        }
+      }
+    }
+    window.customElements.define(CorporateDetails.is, CorporateDetails);
+  </script>
+</dom-module>
