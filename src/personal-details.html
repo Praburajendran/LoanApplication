@@ -21,10 +21,16 @@
     <iron-form id="myForm" on-submit="register">
       <form>
         <div>
-          <h4 class="label">Enter Name</h4>
-          <paper-input type="text" label="Name" id="name" no-label-float value="{{name}}" required>
+          <h4 class="label">Enter First Name</h4>
+          <paper-input type="text" label="First Name" id="firstName" no-label-float value="{{firstName}}" required>
           </paper-input>
         </div>
+
+        <div>
+            <h4 class="label">Enter Last Name</h4>
+            <paper-input type="text" label="Last Name" id="lastName" no-label-float value="{{lastName}}" required>
+            </paper-input>
+          </div>
 
         <div>
           <h4 class="label">Enter Address</h4>
@@ -39,7 +45,7 @@
 
         <div>
             <h4 class="label">Select Birth date</h4>
-            <vaadin-date-picker id='vaadinFromDate' value="{{fromDateVal}}" min={{fromMinDate}} max={{fromMaxDate}} placeholder="Select Date"
+            <vaadin-date-picker id='birthDate' name='birthDate' value="{{fromDateVal}}" min={{fromMinDate}} max={{fromMaxDate}} placeholder="Select Date"
                 on-change="_fromDateChanged">
             </vaadin-date-picker>
         </div>
@@ -57,7 +63,7 @@
 
         <div>
             <h4 class="label">Enter Phone Number</h4>
-            <paper-input type="text" label="Phone" id="phone" no-label-float value="{{phone}}" required>
+            <paper-input type="text" label="Phone" id="phoneNumber" no-label-float value="{{phoneNumber}}" required>
             </paper-input>
           </div>
       </form>
@@ -69,24 +75,6 @@
   <script>
     class PersonalDetails extends Polymer.Element {
       static get is() { return 'personal-details'; }
-
-      register() {
-        var userDetails = {
-          first_name: this.firstname,
-          last_name: this.lastname,
-          email: this.email,
-          username: this.username,
-          password: this.password
-        }
-        if (this.firstname.length >= 3 && this.lastname.length >= 3 && this.email.length >= 3 && this.username.length >= 3 && this.password.length >= 3) {
-          this.bodyData = JSON.stringify(userDetails);
-          var postRequest = this.$.xhr;
-          postRequest.generateRequest();
-        } else {
-          this.msg = "Please enter valid details";
-          this.$.toast.open();
-        }
-      }
     }
     window.customElements.define(PersonalDetails.is, PersonalDetails);
   </script>

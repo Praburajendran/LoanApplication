@@ -13,7 +13,7 @@
     <style include="shared-styles">
     </style>
     <h2 class="centerText">Welcome, {{users.username}}</h2>
-    <h3 class="centerText"> Your Current Loan balance is {{users.accountBalance}} </h3>
+    <h3 class="centerText"> Your Current Loan balance is {{users.loanBalance}} </h3>
 
     <iron-ajax id="transHistory" method="[[api.method]]" handle-as="json" last-response="{{users}}"
       on-response="handleResponse"></iron-ajax>
@@ -28,7 +28,7 @@
             type: Object,
             value: {
               url: "./data/loan-summary-success.json",
-              method: "GET"
+              method: "POST"
             }
           },
           userName: {

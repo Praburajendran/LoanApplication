@@ -18,13 +18,13 @@
 <dom-module id="loan-details">
   <template>
     <style include="common-styles">
-      .customWidth {
-                width: 100%;
-            }
+        .customWidth {
+                  width: 100%;
+              }
 
-      .customWidth paper-item:hover {
-          background-color: #dbdbdb;
-      }
+        .customWidth paper-item:hover {
+            background-color: #dbdbdb;
+        }
     </style>
     <style include="shared-styles">
 
@@ -47,8 +47,8 @@
 
         <div>
             <h4 class="label">Enter Usage</h4>
-            <paper-dropdown-menu allow-outside-scroll="true" id="period" on-iron-select="_periodChanged" class="customWidth" no-label-float>
-                <paper-listbox slot="dropdown-content" attr-for-selected="value" class="dropdown-content customWidth" selected="{{selectedPeriod}}">
+            <paper-dropdown-menu allow-outside-scroll="true" id="loanUsage" name="loanUsage" class="customWidth" no-label-float>
+                <paper-listbox slot="dropdown-content" attr-for-selected="value" class="dropdown-content customWidth">
                     <template is="dom-repeat" items="[[usageArr]]">
                         <paper-item value$="[[item]]">[[item]]</paper-item>
                     </template>
