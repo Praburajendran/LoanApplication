@@ -79,7 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           api: {
             type: Object,
             value: {
-              url: './data/loan-summary-success.json',
+              url: 'http://13.234.117.3:9292/applyloan',
               method: 'POST'
             }
           }
@@ -137,11 +137,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         formData.corporateDetails = corporateObj;
         formData.personalDetails = personalObj;
         formData.loanDetails = loanObj;
-        
-        // XHR request for submitting data.
-        this.bodyData = JSON.stringify(formData);
-        var postRequest = this.$.xhr;
-        postRequest.generateRequest();
+
+        if (personalComp.firstName.length == "" || personalComp.lastName.length == "" || personalComp.email.length == "" || personalComp.passport.length == "" || personalComp.passport.length == "" || corporateComp.companyName.length == "" || loanComp.amount == '') {
+            this.msg = "Please enter all fields";
+            this.$.toast.open();
+        } else {
+            // XHR request for submitting data.
+            this.bodyData = JSON.stringify(formData);
+            var postRequest = this.$.xhr;
+            postRequest.generateRequest();
+        }
       }
 
       _handleError(request, error) {
