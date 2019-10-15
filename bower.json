@@ -26,7 +26,8 @@
     "paper-listbox": "PolymerElements/paper-listbox#^2.1.1",
     "neon-animation": "PolymerElements/neon-animation#^2.2.1",
     "iron-form": "PolymerElements/iron-form#2.4.0",
-    "web-animations-js": "web-animations/web-animations-js#2.2.2"
+    "web-animations-js": "web-animations/web-animations-js#2.2.2",
+    "vaadin-usage-statistics":"3.2.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
